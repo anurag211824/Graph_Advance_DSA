@@ -3,7 +3,7 @@ using namespace std;
 
 class Graph
 {
-    int V;                       // number of vertices
+    int V;                       // Number of vertices
     vector<vector<int>> adjList; // Adjacency list
 
 public:
@@ -15,14 +15,13 @@ public:
 
     void addEdge(int u, int v)
     {
-        // udirected graph
+        // Undirected graph
         adjList[u].push_back(v);
         adjList[v].push_back(u);
     }
 
     void printGraph()
     {
-
         for (int u = 0; u < V; u++)
         {
             cout << "Vertex " << u << ": ";
@@ -33,41 +32,34 @@ public:
             cout << endl;
         }
     }
-    // BFS traversal for a single component
-    void BfsTraversal(int src, vector<bool> &visited)
+
+    // DFS traversal for a single component
+    void DfsTraversalRec(int src, vector<bool> &visited)
     {
-        queue<int> q;
-        q.push(src);
         visited[src] = true;
+        cout << src << " "; // Print current node
 
-        while (!q.empty())
+        for (int &v : adjList[src])
         {
-            int u = q.front();
-            q.pop();
-            cout << u << " ";
-
-            for (auto &v : adjList[u])
+            if (!visited[v])
             {
-                if (!visited[v])
-                {
-                    visited[v] = true;
-                    q.push(v);
-                }
+                DfsTraversalRec(v, visited);
             }
         }
     }
 
-    // BFS traversal for all disconnected components
-    void BfsTraversalAll()
+    // DFS traversal for all disconnected components
+    void DfsTraversal()
     {
         vector<bool> visited(V, false);
 
-        for (int i = 0; i < V; i++) // Loop through all nodes
+        cout << "DFS Traversal (by components):" << endl;
+        for (int i = 0; i < V; i++)
         {
-            if (!visited[i]) // Start BFS if the node is unvisited
+            if (!visited[i])
             {
                 cout << "Component: ";
-                BfsTraversal(i, visited);
+                DfsTraversalRec(i, visited);
                 cout << endl;
             }
         }
@@ -76,7 +68,7 @@ public:
 
 int main()
 {
-    int vertices = 12; // Total number of vertices
+    int vertices = 12;
     Graph g(vertices);
 
     // Adding edges for Component 1
@@ -97,8 +89,8 @@ int main()
     g.addEdge(9, 10);
     g.addEdge(10, 11);
 
-    // Print the adjacency list
-    // g.printGraph();
-    
-    g.BfsTraversalAll();
+    g.DfsTraversal(); // Perform DFS traversal
+    cout << endl;
+
+    g.printGraph(); // Print adjacency list representation
 }

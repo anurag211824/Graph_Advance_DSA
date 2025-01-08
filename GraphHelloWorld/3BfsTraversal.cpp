@@ -33,25 +33,42 @@ public:
             cout << endl;
         }
     }
-    void BfsTraversal(int src)
+    // BFS traversal for a single component
+    void BfsTraversal(int src, vector<bool> &visited)
     {
-        vector<bool> visited(V + 1, false);
-        visited[src] = true;
         queue<int> q;
         q.push(src);
-        cout<<"Bfs Traversal: ";
+        visited[src] = true;
+
         while (!q.empty())
         {
             int u = q.front();
             q.pop();
             cout << u << " ";
+
             for (auto &v : adjList[u])
             {
                 if (!visited[v])
                 {
-                    q.push(v);
                     visited[v] = true;
+                    q.push(v);
                 }
+            }
+        }
+    }
+
+    // BFS traversal for all disconnected components
+    void BfsTraversalAll()
+    {
+        vector<bool> visited(V, false);
+
+        for (int i = 0; i < V; i++) // Loop through all nodes
+        {
+            if (!visited[i]) // Start BFS if the node is unvisited
+            {
+                cout << "Component: ";
+                BfsTraversal(i, visited);
+                cout << endl;
             }
         }
     }
@@ -59,10 +76,10 @@ public:
 
 int main()
 {
-    int vertices = 5; // Number of vertices
+    int vertices = 12; // Total number of vertices
     Graph g(vertices);
 
-    // Adding edges
+    // Adding edges for Component 1
     g.addEdge(0, 1);
     g.addEdge(0, 4);
     g.addEdge(1, 2);
@@ -71,7 +88,17 @@ int main()
     g.addEdge(2, 3);
     g.addEdge(3, 4);
 
+    // Adding edges for Component 2
+    g.addEdge(5, 6);
+    g.addEdge(5, 7);
+
+    // Adding edges for Component 3
+    g.addEdge(8, 9);
+    g.addEdge(9, 10);
+    g.addEdge(10, 11);
+
     // Print the adjacency list
-    //g.printGraph();
-    g.BfsTraversal(0);
+    // g.printGraph();
+    
+    g.BfsTraversalAll();
 }
